@@ -1,0 +1,23 @@
+# intelliJ
+.idea
+.idea/*
+
+# Dependency directories
+node_modules
+dist
+
+# Grunt intermediate storage (http://gruntjs.com/creating-plugins#storing-task-files)
+.grunt
+
+# Optional npm cache directory
+.npm
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?

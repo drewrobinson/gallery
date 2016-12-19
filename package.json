@@ -1,0 +1,16 @@
+{
+  "name": "Slack-Light-Box",
+  "version": "0.0.1",
+  "description": "Light Box demo for Slack interview",
+  "main": "Gulpfile.js",
+  "author": "Liza Detrick",
+  "license": "MIT",
+  "devDependencies": {
+    "browser-sync": "^2.18.5",
+    "gulp": "^3.9.0",
+    "gulp-browserify": "^0.5.1",
+    "gulp-sass": "^2.1.1",
+    "gulp-uglify": "^2.0.0",
+    "uglify": "^0.1.5"
+  }  
+}
