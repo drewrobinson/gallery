@@ -1,76 +1,70 @@
 var Gallery = (global => {
+    "use strict";
+}
 
     const DEFAULT_URI = 'https://www.googleapis.com/customsearch/v1?imgSize=large&cx=016488772293305661751:46ntc6xv0k8&fileType=gif%2Cpng%2Cjpg%2Cjpeg&key=AIzaSyBBwGsQ13DP7SZEKfWekT8BTyuof6Edpcc';
-    const DEFAULT_TERM = 'snowboarding';    //default search query
+    const DEFAULT_TERM = 'snowboarding';    //default search query term
     const DEFAULT_NUM = 10;                 //a number between 1-10 represents num of search results retured
     const FALLBACK_URI = '/data/tmp.json?'; //path to local json file because google limits request for free accounts
 
-    let _uri = null;
-    let _num = null;
-    let _term = null;
-
-    let imagesContainer = document.querySelector('.images');
-    let searchField = document.querySelector('.search-term');
-
+    let instance = {};
 
     /**
      * lightbox
      * @desc - object literal responsible for lightbox behavior
      */
     let lightbox = {
-            container: document.querySelector('.lightbox'),
-            main: document.querySelector('.main'),
-            closeBtn: document.querySelector('.close'),
-            nextBtn: document.querySelector('.arrow-next'),
-            prevBtn: document.querySelector('.arrow-prev'),
             handleEvent: (e) => {
-            let action = e.target.getAttribute('class') || '';
+                let action = e.target.getAttribute('class') || '';
 
-            switch (action) {
-                case 'close':
-                    lightbox.hide();
-                    break;
-                case 'arrow-next':
-                    lightbox.next(e);
-                    break;
-                case 'arrow-prev':
-                    lightbox.prev(e);
-                    break;
-                default:
-            }
+                switch (action) {
+                    case 'close':
+                        lightbox.hide();
+                        break;
+                    case 'arrow-next':
+                        lightbox.next(e);
+                        break;
+                    case 'arrow-prev':
+                        lightbox.prev(e);
+                        break;
+                    default:
+                }
         },
         show: (e) => {
-            lightbox.container.classList.add('show-lightbox');
-            lightbox.container.addEventListener('click', lightbox, false);
+            instance.ui.lightbox.classList.add('show-lightbox');
+            instance.ui.lightbox.addEventListener('click', lightbox, false);
             lightbox.update(e.target.parentNode.attributes['data-src'].value, e.target.parentNode.attributes['data-key'].value);
         },
         hide: (e) => {
             let animationEndHandler = () => {
-                lightbox.container.classList.remove('show-lightbox');
-                lightbox.container.classList.remove('hide-lightbox');
-                lightbox.container.removeEventListener('webkitAnimationEnd', animationEndHandler, false);
+                instance.ui.lightbox.classList.remove('show-lightbox');
+                instance.ui.lightbox.classList.remove('hide-lightbox');
+                instance.ui.lightbox.removeEventListener('webkitAnimationEnd', animationEndHandler, false);
             };
 
-            lightbox.container.removeEventListener('click', lightbox, false);
-            lightbox.container.classList.add('hide-lightbox');
-            lightbox.container.addEventListener('webkitAnimationEnd', animationEndHandler, false);
+            instance.ui.lightbox.removeEventListener('click', lightbox, false);
+            instance.ui.lightbox.classList.add('hide-lightbox');
+            instance.ui.lightbox.addEventListener('webkitAnimationEnd', animationEndHandler, false);
         },
         next: (e) => {
-            let index = parseInt(lightbox.main.dataset.key);
-            let nextIndex = (index < imagesContainer.childNodes.length - 1) ? index + 1 : 0;
-            let nextFigure = imagesContainer.querySelector('[data-key="' + nextIndex + '"]');
+            let main = instance.ui.lightbox.querySelector('.main');
+            let index = parseInt(main.dataset.key);
+            let nextIndex = (index < instance.ui.imagesContainer.childNodes.length - 1) ? index + 1 : 0;
+            let nextFigure = instance.ui.imagesContainer.querySelector('[data-key="' + nextIndex + '"]');
 
             lightbox.update(nextFigure.attributes['data-src'].value, nextIndex);
         },
         prev: (e) => {
-            let index = parseInt(lightbox.main.dataset.key);
-            let prevIndex = (index > 0) ? index - 1 : imagesContainer.childNodes.length - 1;
-            let prevFigure = imagesContainer.querySelector('[data-key="' + prevIndex + '"]');
+            let main = instance.ui.lightbox.querySelector('.main');
+            let index = parseInt(main.dataset.key);
+            let prevIndex = (index > 0) ? index - 1 : instance.ui.imagesContainer.childNodes.length - 1;
+            let prevFigure = instance.ui.imagesContainer.querySelector('[data-key="' + prevIndex + '"]');
             lightbox.update(prevFigure.attributes['data-src'].value, prevIndex);
         },
         update: (src, key) => {
-            lightbox.main.setAttribute('src', src);
-            lightbox.main.setAttribute('data-key', key);
+            let main = instance.ui.lightbox.querySelector('.main');
+            main.setAttribute('src', src);
+            main.setAttribute('data-key', key);
         }
     };
 
@@ -121,7 +115,7 @@ var Gallery = (global => {
         try {
             _figure = Object.create(Object.prototype, {
                 src: { value: src },
-                key: { value: imagesContainer.childNodes.length }
+                key: { value: instance.ui.imagesContainer.childNodes.length }
             });
 
             Object.defineProperty(_figure, "template", { set: function (x) {
@@ -133,7 +127,7 @@ var Gallery = (global => {
             _figure.template = `<figure data-src='${_figure.src}' data-key='${_figure.key}' />`;
             _figure.el.addEventListener('click', lightbox.show, false);
 
-            imagesContainer.appendChild(_figure.el);
+            instance.ui.imagesContainer.appendChild(_figure.el);
             lazyLoad(_figure);
 
             delete _figure;
@@ -143,18 +137,7 @@ var Gallery = (global => {
         }
     };
 
-    /**
-     * fallback
-     * @desc - attempts to fetch local data file
-     */
-    let fallback = () => {
-        try{
-            fetchData(FALLBACK_URI, 'snowboarding', num);
-            uri = FALLBACK_URI;
-        }catch(error){
-            throw new Error("Error: Bad XHR Request")
-        }
-    };
+
 
     /**
      * xhrSuccessHandler
@@ -166,7 +149,7 @@ var Gallery = (global => {
         if (e.target.status >= 200 && e.target.status < 400) {
             let json = JSON.parse(e.target.responseText);
 
-            imagesContainer.innerHTML = "";
+            instance.ui.imagesContainer.innerHTML = "";
 
             json.items.forEach(function (item) {
                 if (item.pagemap.hasOwnProperty('cse_image')) {
@@ -194,17 +177,32 @@ var Gallery = (global => {
      * @desc - makes xhr request
      */
     let fetchData = (uri, term, num) => {
-        let n = num || _num;
-        let u = uri || _uri;
-        let t = term || _term;
         let xhr = new XMLHttpRequest();
 
         xhr.addEventListener('load', xhrSuccessHandler);
         xhr.addEventListener('error', xhrErrorHandler);
-        xhr.open('GET', u + '&q=' + t + '&num=' + n);
+        xhr.open('GET', uri + '&q=' + term + '&num=' + num);
         xhr.send();
-
         searchField.value = term;
+    };
+
+    /**
+     * fallback
+     * @desc - attempts to fetch local data file
+     */
+    let fallback = () => {
+        fetchData(FALLBACK_URI, DEFAULT_TERM, DEFAULT_NUM);
+    };
+
+    /**
+     * toHTML
+     * @param {string}
+     * @desc - helper function to covnert string template to dom
+     */
+    let toHTML = (templateString) => {
+        let parser = new DOMParser();
+        let doc = parser.parseFromString(templateString, 'text/xml');
+        return doc.firstChild;
     };
 
     /**
@@ -213,20 +211,44 @@ var Gallery = (global => {
      * @desc - sets gallery options and makes initial xhr request
      */
     let init = (opts) =>{
-        _uri = opts.uri || DEFAULT_URI;
-        _num = opts.num || DEFAULT_NUM;
-        _term = opts.term || DEFAULT_TERM;
 
-        //enter key handler
-        searchField.addEventListener('keyup', function(e){
+        if(!opts.selector){
+            throw new Error("Gallery Requires A Valid Selector");
+        }
+
+        let uri = opts.uri || DEFAULT_URI;
+        let term = opts.term || DEFAULT_TERM;
+        let num = opts.num || DEFAULT_NUM;
+
+        //gallery ui
+        let templates = [
+            '<div><input type="text" class="search-term" placeholder="Enter Search Term" /></div>',
+            '<div class="images"></div>',
+            '<div class="lightbox"><div class="col-lt"><a class="arrow-prev"></a></div><div class="col-ct"><img class="main" /></div><div class="col-rt"> <a class="close"></a> <a class="arrow-next"></a> </div> </div>';
+
+        instance.ui = {
+            galleryContainer: document.querySelector(opts.selector)
+        };
+
+        templates.forEach(function(template){
+            instance.ui.galleryContainer.appendChild(template);
+        });
+
+        instance.ui.searchField = galleryContainer.querySelector('.search-term');
+        instance.ui.imagesContainer = galleryContainer.querySelector('.images');
+        instance.ui.lightbox = galleryContainer.querySelector('.lightbox');
+
+        //bind enter key handler
+        instance.ui.searchField.addEventListener('keyup', function(e){
             if(e.keyCode == 13){
-                term = searchField.value;
-                fetchData(_uri, searchField.value, _num);
+                term = instance.ui.searchField.value;
+                fetchData(uri, instance.searchField.value, num);
             }
         });
 
-        fetchData(_uri, _term, _num);
-    }
+       fetchData(uri, term, num);
+
+    };
 
 
     //expose init to outside world
