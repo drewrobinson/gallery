@@ -19,9 +19,9 @@ gulp.task('sass', function() {
 
 // process JS files and return the stream.
 gulp.task('js', function () {
-    return gulp.src('app/js/**/*.js')
+    return gulp.src('./app/js/main.js')
         .pipe(browserify())
-        .pipe(gulp.dest('dist/js'));
+        .pipe(gulp.dest('./dist/js'));
 });
 
 // Copy local json data
