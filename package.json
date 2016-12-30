@@ -1,16 +1,18 @@
 {
-  "name": "Slack-Light-Box",
+  "name": "Slack-Gallery",
   "version": "0.0.1",
-  "description": "Light Box demo for Slack interview",
+  "description": "Light Box Gallery Project",
   "main": "Gulpfile.js",
-  "author": "Liza Detrick",
+  "author": "Drew Robinson",
   "license": "MIT",
   "devDependencies": {
     "browser-sync": "^2.18.5",
+    "chai": "^3.5.0",
     "gulp": "^3.9.0",
     "gulp-browserify": "^0.5.1",
     "gulp-sass": "^2.1.1",
     "gulp-uglify": "^2.0.0",
+    "mocha": "^3.2.0",
     "uglify": "^0.1.5"
-  }  
+  }
 }
