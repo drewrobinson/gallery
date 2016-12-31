@@ -38,7 +38,11 @@ var Gallery = (global => {
                 let searchField = this.container.querySelector('.search-term');
                     searchField.value = this.model.queries.request[0].searchTerms;
 
-                this.lightbox = (this.lightbox) ? this.lightbox.setModel(imagesArray) : new LightBox(this.container, imagesArray);
+                if(this.lightbox){
+                    this.lightbox.setModel(imagesArray)
+                }else{
+                    this.lightbox = new LightBox(this.container, imagesArray);
+                }
             };
 
             this.catcher = (error) => {
@@ -111,7 +115,6 @@ var Gallery = (global => {
             let imageClickHandler = (e) => {
                 let src = e.target.parentNode.attributes['data-src'].value,
                     key = parseInt(e.target.parentNode.attributes['data-key'].value);
-
                 this.lightbox.show(src, key);
             }
             try {
