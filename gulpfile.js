@@ -32,7 +32,6 @@ gulp.task('data', function() {
 });
 
 gulp.task('test', function() {
-
     return gulp.src(['test/*.js'])
         .pipe(shell('npm test'));
 });
@@ -67,6 +66,7 @@ gulp.task('serve',['html','sass','js','data', 'test'], function () {
     // add browserSync.reload to the tasks array to make
     // all browsers reload after tasks are complete.
     gulp.watch("app/js/**/*.js", ['js-watch','test']);
+    gulp.watch("test/*.js",['test']);
     gulp.watch("app/scss/*.scss", ['sass-watch']);
     gulp.watch("app/*.html",['html-watch']);
 

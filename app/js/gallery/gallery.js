@@ -26,19 +26,19 @@ var Gallery = (global => {
             this.lightbox   = null;
 
             this.resolver = (responseText) =>{
-                let json = JSON.parse(responseText);
+                let json = JSON.parse(responseText), imagesArray = [];
                 this.model = json;
                 this.container.querySelector('.images').innerHTML = '';
                 json.items.forEach( (item) => {
                     if (item.pagemap.hasOwnProperty('cse_image')) {
                         this.addImage(item.pagemap['cse_image'][0].src);
+                        imagesArray.push(item.pagemap['cse_image'][0].src);
                     }
                 });
                 let searchField = this.container.querySelector('.search-term');
                     searchField.value = this.model.queries.request[0].searchTerms;
 
-                this.lightbox = (this.lightbox) ? this.lightbox.setModel(this.model.items) : new LightBox(this.container, this.model.items);
-                console.log(this.lightbox);
+                this.lightbox = (this.lightbox) ? this.lightbox.setModel(imagesArray) : new LightBox(this.container, imagesArray);
             };
 
             this.catcher = (error) => {
