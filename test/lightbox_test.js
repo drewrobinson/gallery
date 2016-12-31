@@ -9,7 +9,7 @@ describe('LightBox instance', function(){
 
     var CONSTRUCTOR_ERROR = /LightBox constructor requires dom node and data model array/;
 
-    it('should receive valid DOM node as first argument to constructor',function(){
+    it('constructor should throw error if first arg is not a DOM node',function(){
 
         var badConstructor = function() {
             return new LightBox("#type-error", []);
@@ -26,7 +26,7 @@ describe('LightBox instance', function(){
         expect(fnGood).not.to.throw(CONSTRUCTOR_ERROR);
     });
 
-    it('should receive model as Array for second argument to constructor',function(){
+    it('constructor should throw error if second arg is not an Array',function(){
 
         var badConstructor = function() {
             return new LightBox(document.createElement('div'), {});
@@ -83,7 +83,7 @@ describe('LightBox behavior', function() {
         "https://c2.staticflickr.com/6/5574/30167563922_684e8d6796_b.jpg"
     ];
 
-    it('show method should receive string as first argument', function(){
+    it('show method should throw error if first argument is not a String', function(){
 
         var lightbox = new LightBox(document.createElement('div'), model);
 
@@ -94,7 +94,7 @@ describe('LightBox behavior', function() {
         expect(fnGood).not.to.throw(SHOW_ERROR);
     });
 
-    it('show method should receive number as second argument', function(){
+    it('show method should throw error if second argument is not a Number', function(){
 
         var lightbox = new LightBox(document.createElement('div'), model);
 
@@ -105,7 +105,7 @@ describe('LightBox behavior', function() {
         expect(fnGood).not.to.throw(SHOW_ERROR);
     });
 
-    it('show method should add show-lightbox to lightbox classList', function(){
+    it('show method should add "show-lightbox" to lightbox elm classList', function(){
 
         var lightbox = new LightBox(document.createElement('div'), model);
 
@@ -113,7 +113,7 @@ describe('LightBox behavior', function() {
         expect(lightbox.elm.classList[1]).to.equal('show-lightbox');
     });
 
-    it('hide method should add hide-lightbox to lightbox classList', function(){
+    it('hide method should add "hide-lightbox" to lightbox elm classList', function(){
 
         var lightbox = new LightBox(document.createElement('div'), []);
 

@@ -15,7 +15,7 @@ var Gallery = (global => {
         constructor(opts){
 
             if(!(opts.node instanceof Node)){
-                throw new Error("Gallery Requires DOM Element or Node");
+                throw new Error("Gallery Requires DOM Node");
             }
 
             this.uri        = opts.uri      || DEFAULT_URI;
@@ -29,12 +29,14 @@ var Gallery = (global => {
                 let json = JSON.parse(responseText), imagesArray = [];
                 this.model = json;
                 this.container.querySelector('.images').innerHTML = '';
+
                 json.items.forEach( (item) => {
                     if (item.pagemap.hasOwnProperty('cse_image')) {
                         this.addImage(item.pagemap['cse_image'][0].src);
                         imagesArray.push(item.pagemap['cse_image'][0].src);
                     }
                 });
+
                 let searchField = this.container.querySelector('.search-term');
                     searchField.value = this.model.queries.request[0].searchTerms;
 
@@ -73,12 +75,12 @@ var Gallery = (global => {
 
              let searchField = this.container.querySelector('.search-term');
 
-             searchField.addEventListener('keyup', (e) => {
+             searchField.onkeyup =(e) => {
                 if(e.keyCode == 13){
                     this.term = searchField.value;
                     this.fetchData().then(this.resolver).catch(this.catcher);
                 }
-             });
+             };
         }
 
         /**
@@ -87,7 +89,6 @@ var Gallery = (global => {
          * @desc - Makes xhr request for images and returns promise object
          */
         fetchData(){
-
             return new Promise((resolve, reject) => {
                 let xhr = new XMLHttpRequest();
                     xhr.open('GET', this.uri + '&q=' + this.term + '&num=' + this.num);
@@ -110,33 +111,39 @@ var Gallery = (global => {
          * @desc - creates figure object and append it's el property to dom
          */
         addImage(src){
-            let figure, container = this.container.querySelector('.images');
+
+            if(typeof src !== 'string'){
+                throw new Error("Gallery addImage method requires src string arg");
+            }
+
+            let container = this.container.querySelector('.images');
+
+            let figure = Object.create(Object.prototype, {
+                src: { value: src },
+                key: { value: container.childNodes.length }
+            });
+
+            Object.defineProperty(figure, "template", { set: function (x) {
+                let parser = new DOMParser();
+                let doc = parser.parseFromString(x, 'text/xml');
+                this.el = doc.firstChild;
+            }});
 
             let imageClickHandler = (e) => {
                 let src = e.target.parentNode.attributes['data-src'].value,
                     key = parseInt(e.target.parentNode.attributes['data-key'].value);
                 this.lightbox.show(src, key);
             }
+
+            figure.template = `<figure data-src='${figure.src}' data-key='${figure.key}' />`;
+            figure.el.addEventListener('click', imageClickHandler, false);
+
+            container.appendChild(figure.el);
+
             try {
-                figure = Object.create(Object.prototype, {
-                    src: { value: src },
-                    key: { value: container.childNodes.length }
-                });
-
-                Object.defineProperty(figure, "template", { set: function (x) {
-                    let parser = new DOMParser();
-                    let doc = parser.parseFromString(x, 'text/xml');
-                    this.el = doc.firstChild;
-                }});
-
-                figure.template = `<figure data-src='${figure.src}' data-key='${figure.key}' />`;
-                figure.el.addEventListener('click', imageClickHandler, false);
-
-                container.appendChild(figure.el);
-                lazyLoad(figure);
-
+                lazyLoad(figure.src, figure.el);
             } catch (err) {
-                console.log('Error adding image: ' + err);
+                console.log('Error adding lazyload image: ' + err);
             }
         }
 

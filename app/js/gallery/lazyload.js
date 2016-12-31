@@ -3,15 +3,16 @@ var lazyLoad = (global => {
     "use strict";
 
     /**
-     * lazyLoad
-     * @param {Object} figure
+     * LazyLoad
+     * @param src {String}
+     * @param elm {Node}
      * @desc - displays placeholder image until a user action.
      * Inspired by: https://codepen.io/shshaw/post/responsive-placeholder-image
      */
-     let lazyLoad = (figure) => {
+     let lazyLoad = (src, elm) => {
 
-        if (!figure.src || !figure.el) {
-            throw Error('image element and src url are required for lazyLoad');
+        if (typeof src !== 'string' || !(elm instanceof Node)) {
+            throw Error('lazyLoad requires image src String and DOM Node args');
         }
 
         let transSVG = 'data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D"http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" viewBox%3D"0 0 100% 100%"%2F%3E';
@@ -28,14 +29,15 @@ var lazyLoad = (global => {
 
             target.removeEventListener('mouseover', replace, false);
             target.setAttribute('src', transSVG);
-            target.style.backgroundImage = 'url("' + figure.src + '")';
+            target.style.backgroundImage = 'url("' + src + '")';
         };
 
         let image = document.createElement('IMG');
         image.setAttribute('class', 'replaceable');
         image.setAttribute('src', 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(iconSVG));
-        image.addEventListener('mouseover', replace, false);
-        figure.el.appendChild(image);
+        image.onmouseover = replace;
+
+        elm.appendChild(image);
     }
 
     return lazyLoad;
