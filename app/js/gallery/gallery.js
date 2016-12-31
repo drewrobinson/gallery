@@ -110,7 +110,7 @@ var Gallery = (global => {
 
             let imageClickHandler = (e) => {
                 let src = e.target.parentNode.attributes['data-src'].value,
-                    key = e.target.parentNode.attributes['data-key'].value;
+                    key = parseInt(e.target.parentNode.attributes['data-key'].value);
 
                 this.lightbox.show(src, key);
             }
