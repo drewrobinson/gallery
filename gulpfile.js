@@ -3,6 +3,7 @@ var browserSync = require('browser-sync').create();
 var browserify  = require('gulp-browserify');
 var sass        = require('gulp-sass');
 var uglify      = require('gulp-uglify');
+var shell       = require('gulp-shell');
 
 // Update html
 gulp.task('html', function() {
@@ -30,6 +31,13 @@ gulp.task('data', function() {
         .pipe(gulp.dest("dist/data"));
 });
 
+gulp.task('test', function() {
+
+    return gulp.src(['test/*.js'])
+        .pipe(shell('npm test'));
+});
+
+
 // create a task that ensures the `js` task is complete before
 // reloading browsers
 gulp.task('js-watch', ['js'], function (done) {
@@ -47,8 +55,9 @@ gulp.task('html-watch', ['html'], function (done) {
     done();
 });
 
+
 // use default task to launch Browsersync and watch JS files
-gulp.task('serve',['html','sass','js','data'], function () {
+gulp.task('serve',['html','sass','js','data', 'test'], function () {
 
     // Serve files from the root of this project
     browserSync.init({
@@ -57,9 +66,10 @@ gulp.task('serve',['html','sass','js','data'], function () {
 
     // add browserSync.reload to the tasks array to make
     // all browsers reload after tasks are complete.
-    gulp.watch("app/js/**/*.js", ['js-watch']);
+    gulp.watch("app/js/**/*.js", ['js-watch','test']);
     gulp.watch("app/scss/*.scss", ['sass-watch']);
     gulp.watch("app/*.html",['html-watch']);
+
 });
 
 gulp.task('default', ['serve']);
