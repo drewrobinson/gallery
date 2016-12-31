@@ -5,28 +5,31 @@ var jsdom = require('jsdom');
 
 global.DOMParser = jsdom.jsdom().defaultView.DOMParser;
 
-describe('Lightbox Object', function(){
+describe('LightBox instance', function(){
 
-    var lightbox = require('../app/js/gallery/lightbox');
-    var Gallery = require('../app/js/gallery/gallery');
+    var LightBox = require('../app/js/gallery/lightbox');
 
     it('should contain show, hide, prev, next, and update methods',function(){
-        expect(lightbox.hasOwnProperty('show')).to.be.ok;
-        expect(lightbox.hasOwnProperty('hide')).to.be.ok;
-        expect(lightbox.hasOwnProperty('prev')).to.be.ok;
-        expect(lightbox.hasOwnProperty('next')).to.be.ok
-        expect(lightbox.hasOwnProperty('update')).to.be.ok;
-    });
-
-    it('context should possess container property',function(){
-        expect(lightbox.hasOwnProperty('container')).to.be.false;
-
         var obj = {
-            container: document.createElement('div')
+            elm: document.createElement('div'),
+            model : []
         };
 
-        console.log(lightbox.context.call(obj).hasOwnProperty('container'));
+        var lightbox = new LightBox(obj.elm, obj.model);
 
-        expect(lightbox.context.call(obj).hasOwnProperty('container')).to.be.ok;
+        expect(lightbox.hasOwnProperty('show')).to.be.ok;
+        expect(lightbox.__proto__.hasOwnProperty('hide'));
+        expect(lightbox.__proto__.hasOwnProperty('prev')).to.be.ok;
+        expect(lightbox.__proto__.hasOwnProperty('next')).to.be.ok
+        expect(lightbox.__proto__.hasOwnProperty('update')).to.be.ok;
+    });
+
+    it('template should be rendered with .lightbox class attribute and assigned to lightbox.elm property',function(){
+        var obj = {
+            node: document.createElement('div'),
+            model : []
+        };
+        var lightbox = new LightBox(obj.node, obj.model);
+        expect(lightbox.elm.classList[0]).to.equal('lightbox');
     });
 });

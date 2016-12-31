@@ -37,7 +37,8 @@ var Gallery = (global => {
                 let searchField = this.container.querySelector('.search-term');
                     searchField.value = this.model.queries.request[0].searchTerms;
 
-                this.lightbox = (this.lightbox) ? this.lightbox.setModel(this.model) : new LightBox(this.container, this.model) ;
+                this.lightbox = (this.lightbox) ? this.lightbox.setModel(this.model.items) : new LightBox(this.container, this.model.items);
+                console.log(this.lightbox);
             };
 
             this.catcher = (error) => {

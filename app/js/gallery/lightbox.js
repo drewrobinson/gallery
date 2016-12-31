@@ -12,9 +12,13 @@ var LightBox = (global => {
     class LightBox {
 
         constructor(element, model){
-            if(!element || !model){
-                throw new Error('lightbox requires HTML element and data model');
+            if(!(element instanceof Node)){
+                throw new Error('LightBox requires HTML element and data model');
             }
+
+            let template = '<div class="lightbox"><div class="col-lt"><a class="arrow-prev"></a></div><div class="col-ct"><img class="main" /></div><div class="col-rt"> <a class="close"></a> <a class="arrow-next"></a> </div> </div>';
+
+            element.appendChild(util.toHTML(template));
 
             this.uid = Math.floor((Math.random() * 10000) + 1);
 
@@ -24,13 +28,7 @@ var LightBox = (global => {
                  this.update(src, key);
             };
 
-            let template = '<div class="lightbox"><div class="col-lt"><a class="arrow-prev"></a></div><div class="col-ct"><img class="main" /></div><div class="col-rt"> <a class="close"></a> <a class="arrow-next"></a> </div> </div>';
-            let _html =  util.toHTML(template);
-
-            element.appendChild(_html);
-
             this.elm = element.querySelector('.lightbox');
-
             this.setModel(model);
         }
 
@@ -83,8 +81,8 @@ var LightBox = (global => {
             this.update(src, prevIndex);
         }
 
-        setModel(data){
-            let images = data.items.filter((item)=>{
+        setModel(items){
+            let images = items.filter((item)=>{
                 if(item.pagemap['cse_image']){
                     return item;
                 }
