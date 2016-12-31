@@ -17,6 +17,6 @@ var util = (global => {
 
     return util;
 
-})(window)
+})()
 
 module.exports = util;

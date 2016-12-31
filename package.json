@@ -12,7 +12,13 @@
     "gulp-browserify": "^0.5.1",
     "gulp-sass": "^2.1.1",
     "gulp-uglify": "^2.0.0",
+    "jsdom": "^9.9.1",
+    "jsdom-global": "^2.1.1",
     "mocha": "^3.2.0",
+    "mocha-jsdom": "^1.1.0",
     "uglify": "^0.1.5"
+  },
+  "scripts": {
+    "test": "mocha"
   }
 }

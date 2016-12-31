@@ -1,5 +1,5 @@
 var lazyLoad = require('./lazyload');
-var lightbox = require('./lightbox');
+var LightBox = require('./lightbox');
 var util     = require('../util/util');
 
 
@@ -13,26 +13,48 @@ var Gallery = (global => {
     class Gallery {
 
         constructor(opts){
-            if(!opts.selector){
-                throw new Error("Gallery Requires A Valid Selector");
+
+            if(!(opts.node instanceof Node)){
+                throw new Error("Gallery Requires DOM Element or Node");
             }
 
             this.uri        = opts.uri      || DEFAULT_URI;
             this.term       = opts.term     || DEFAULT_TERM;
             this.num        = opts.num      || DEFAULT_NUM;
-            
-            this.container  = document.querySelector(opts.selector);
-            this.container.classList.add('container');
+            this.container  = opts.node;
+            this.model      = null;
+            this.lightbox   = null;
+
+            this.resolver = (responseText) =>{
+                let json = JSON.parse(responseText);
+                this.model = json;
+                this.container.querySelector('.images').innerHTML = '';
+                json.items.forEach( (item) => {
+                    if (item.pagemap.hasOwnProperty('cse_image')) {
+                        this.addImage(item.pagemap['cse_image'][0].src);
+                    }
+                });
+                let searchField = this.container.querySelector('.search-term');
+                    searchField.value = this.model.queries.request[0].searchTerms;
+
+                this.lightbox = (this.lightbox) ? this.lightbox.setModel(this.model) : new LightBox(this.container, this.model) ;
+            };
+
+            this.catcher = (error) => {
+                throw new Error('There was an error fetching Gallery data: ' + error);
+            };
 
             this.renderUI();
-            this.fetchData();
+            this.fetchData().then(this.resolver).catch(this.catcher);
         }
 
         /**
          * renderUI
-         * @desc - appends ui templates into the selector to be used as the gallery container
+         * @desc - appends ui templates into the container node for the gallery
          */
         renderUI(){
+
+            this.container.classList.add('container');
 
             let templates = [
                 '<div><input type="text" class="search-term" placeholder="Enter Search Term" /></div>',
@@ -46,53 +68,35 @@ var Gallery = (global => {
 
              let searchField = this.container.querySelector('.search-term');
 
-             //bind keyCode
              searchField.addEventListener('keyup', (e) => {
                 if(e.keyCode == 13){
                     this.term = searchField.value;
-                    this.fetchData();
+                    this.fetchData().then(this.resolver).catch(this.catcher);
                 }
              });
         }
 
         /**
          * fetchData
-         * @desc - makes xhr request for images
+         * @return {Promise}
+         * @desc - Makes xhr request for images and returns promise object
          */
         fetchData(){
 
-            let xhrErrorHandler = (e) => {
-                throw new Error('There was an error with the images request');
+            return new Promise((resolve, reject) => {
+                let xhr = new XMLHttpRequest();
+                    xhr.open('GET', this.uri + '&q=' + this.term + '&num=' + this.num);
 
-            };
-
-            let xhrSuccessHandler = (e) => {
-                if (e.target.status >= 200 && e.target.status < 400) {
-                    let json = JSON.parse(e.target.responseText);
-
-                    this.container.querySelector('.images').innerHTML = '';
-
-                    json.items.forEach(function (item) {
-                        if (item.pagemap.hasOwnProperty('cse_image')) {
-                            this.addImage(item.pagemap['cse_image'][0].src);
-                        }
-                    }, this);
-
-
-                }else{
-                    throw new Error('There was an error with the images request');
-                }
-            };
-
-            let xhr = new XMLHttpRequest();
-
-            xhr.addEventListener('load', xhrSuccessHandler);
-            xhr.addEventListener('error', xhrErrorHandler);
-            xhr.open('GET', this.uri + '&q=' + this.term + '&num=' + this.num);
-            xhr.send();
-
-            let searchField = this.container.querySelector('.search-term');
-            searchField.value = this.term;
+                xhr.onload = () => {
+                    if (xhr.status >= 200 && xhr.status < 300) {
+                        resolve(xhr.response);
+                    } else {
+                        reject(xhr.statusText);
+                    }
+                };
+                xhr.onerror = () => reject(xhr.statusText);
+                xhr.send();
+            });
         }
 
         /**
@@ -102,6 +106,13 @@ var Gallery = (global => {
          */
         addImage(src){
             let figure, container = this.container.querySelector('.images');
+
+            let imageClickHandler = (e) => {
+                let src = e.target.parentNode.attributes['data-src'].value,
+                    key = e.target.parentNode.attributes['data-key'].value;
+
+                this.lightbox.show(src, key);
+            }
             try {
                 figure = Object.create(Object.prototype, {
                     src: { value: src },
@@ -115,7 +126,7 @@ var Gallery = (global => {
                 }});
 
                 figure.template = `<figure data-src='${figure.src}' data-key='${figure.key}' />`;
-                figure.el.addEventListener('click', lightbox.show.bind(this), false);
+                figure.el.addEventListener('click', imageClickHandler, false);
 
                 container.appendChild(figure.el);
                 lazyLoad(figure);
