@@ -5,6 +5,7 @@ Concepts:
  - es6 classes
  - es6 template literals
  - async networking with promises
+ - implement 3rd party API (Google Custom Search)
 
 Env:
  - build process, gulp
