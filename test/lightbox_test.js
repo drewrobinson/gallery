@@ -24,7 +24,7 @@ describe('LightBox instance', function(){
         expect(lightbox.__proto__.hasOwnProperty('update')).to.be.ok;
     });
 
-    it('should have template containing "lightbox" as first class in classList ',function(){
+    it('should have DOM template assigned to elm property',function(){
         var obj = {
             node: document.createElement('div'),
             model : []
