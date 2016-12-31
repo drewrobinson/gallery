@@ -24,12 +24,22 @@ describe('LightBox instance', function(){
         expect(lightbox.__proto__.hasOwnProperty('update')).to.be.ok;
     });
 
-    it('should have DOM template assigned to elm property',function(){
+    it('template should have .lightbox, .main, .close, .arrow-prev, and .arrow-next selectors',function(){
         var obj = {
             node: document.createElement('div'),
             model : []
         };
         var lightbox = new LightBox(obj.node, obj.model);
+
+        var closeBtn = lightbox.elm.querySelector('.close');
+        var mainImg = lightbox.elm.querySelector('.main');
+        var nextArrow = lightbox.elm.querySelector('.arrow-next');
+        var prevArrow = lightbox.elm.querySelector('.arrow-prev');
+
         expect(lightbox.elm.classList[0]).to.equal('lightbox');
+        expect(closeBtn.classList[0]).to.equal('close');
+        expect(mainImg.classList[0]).to.equal('main');
+        expect(nextArrow.classList[0]).to.equal('arrow-next');
+        expect(prevArrow.classList[0]).to.equal('arrow-prev');
     });
 });
