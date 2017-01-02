@@ -10,11 +10,10 @@
     "chai": "^3.5.0",
     "gulp": "^3.9.0",
     "gulp-browserify": "^0.5.1",
-    "gulp-mocha": "^3.0.1",
     "gulp-sass": "^2.1.1",
-    "gulp-shell": "^0.5.2",
+    "gulp-spawn-mocha": "^3.1.0",
     "gulp-uglify": "^2.0.0",
-    "gulp-util": "^3.0.8",
+    "istanbul": "^0.4.5",
     "jsdom": "^9.9.1",
     "jsdom-global": "^2.1.1",
     "mocha": "^3.2.0",
@@ -22,6 +21,7 @@
     "uglify": "^0.1.5"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "test:watch": "mocha --watch ./test ./"
   }
 }

@@ -3,7 +3,7 @@ var browserSync = require('browser-sync').create();
 var browserify  = require('gulp-browserify');
 var sass        = require('gulp-sass');
 var uglify      = require('gulp-uglify');
-var shell       = require('gulp-shell');
+var mocha       = require('gulp-spawn-mocha');
 
 // Update html
 gulp.task('html', function() {
@@ -32,10 +32,13 @@ gulp.task('data', function() {
 });
 
 gulp.task('test', function() {
-    return gulp.src(['test/*.js'])
-        .pipe(shell('npm test'));
+    return gulp
+        .src(['test/*.js'], { read: false })
+        .pipe(mocha({
+            require: ['jsdom-global/register'],
+            reporter: 'min'
+        }));
 });
-
 
 // create a task that ensures the `js` task is complete before
 // reloading browsers
@@ -66,7 +69,6 @@ gulp.task('serve',['html','sass','js','data', 'test'], function () {
     // add browserSync.reload to the tasks array to make
     // all browsers reload after tasks are complete.
     gulp.watch("app/js/**/*.js", ['js-watch','test']);
-    gulp.watch("test/*.js",['test']);
     gulp.watch("app/scss/*.scss", ['sass-watch']);
     gulp.watch("app/*.html",['html-watch']);
 

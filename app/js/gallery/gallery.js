@@ -36,7 +36,6 @@ var Gallery = (global => {
             this.model      = null;
             this.lightbox   = null;
 
-
             /**
              *
              * @param responseText
