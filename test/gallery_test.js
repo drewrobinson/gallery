@@ -1,5 +1,10 @@
-var expect = require('chai').expect;
+var chai = require('chai');
 var jsdom = require('jsdom');
+var sinon = require('sinon');
+var istanbul = require('istanbul');
+var expect = chai.expect;
+
+require('sinon-as-promised');
 
 global.DOMParser = jsdom.jsdom().defaultView.DOMParser;
 
@@ -46,23 +51,56 @@ describe('Gallery edge cases', function(){
 });
 
 
+
 describe('Gallery behavior', function(){
     var Gallery = require('../app/js/gallery/gallery');
-    var ADD_FIGURE_ERROR, instance, searchField, imagesContainer;
+    var ADD_FIGURE_ERROR, instance, searchField, imagesContainer, responseText;
 
     before(function(){
         ADD_FIGURE_ERROR = /Gallery addFigure method requires src string arg/;
+        responseText = JSON.stringify({
+            "kind": "customsearch#search",
+            "queries": {
+                "request": [
+                    {
+                        "searchTerms": "jacket"
+                    }
+                ]
+            },
+            "items": [
+                {
+                    "kind": "customsearch#result",
+                    "pagemap": {
+                        "cse_image": [
+                            {
+                                "src": "http://media.gettyimages.com/photos/from-style-to-success-picture-id514136469?s=170667a"
+                            }
+                        ]
+                    }
+                }
+            ]
+        });
     });
 
     beforeEach(function(){
         instance = new Gallery({
             node: document.createElement('div')
+            ,uri: '../app/data/tmp.json?'
         });
 
         searchField = instance.container.querySelector('.search-term');
         imagesContainer = instance.container.querySelector('.images');
     });
 
+    it('resolver should update model and create instance of LightBox', function () {
+        var stub = sinon.stub().resolves(responseText);
+        return stub().then(function (data) {
+            instance.resolver(data);
+            expect(instance.lightbox).to.be.ok;
+            expect(instance.lightbox.model.length).to.equal(1);
+        });
+    });
+    
     it('renderUI method should add "container" to gallery container classList', function(){
         expect(instance.container.classList[0]).to.equal('container');
     });

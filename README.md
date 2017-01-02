@@ -21,10 +21,6 @@ npm install && gulp
 
 
 
-
-> Slack-Gallery@0.0.1 test /Users/drobinso/_Development/slack-gallery
-> mocha
-
 # TOC
    - [Gallery edge cases](#gallery-edge-cases)
    - [Gallery behavior](#gallery-behavior)
@@ -55,6 +51,17 @@ expect(instance).to.have.property('catcher');
 
 <a name="gallery-behavior"></a>
 # Gallery behavior
+resolver should update model and create instance of LightBox.
+
+```js
+var stub = sinon.stub().resolves(responseText);
+return stub().then(function (data) {
+    instance.resolver(data);
+    expect(instance.lightbox).to.be.ok;
+    expect(instance.lightbox.model.length).to.equal(1);
+});
+```
+
 renderUI method should add "container" to gallery container classList.
 
 ```js
