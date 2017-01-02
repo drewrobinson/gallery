@@ -1,21 +1,32 @@
+/**
+ *  Class representing a Gallery.
+ *
+ * @author Drew Robinson (hello@drewrobinson.com)
+ * @version 0.0.1
+ * @param  {Object} opts is an object to configure the gallery instance dom node, search uri, search term and num of results per page.
+ * @return Gallery Class
+ */
+
 var lazyLoad = require('./lazyload');
 var LightBox = require('./lightbox');
 var util     = require('../util/util');
 
-
 var Gallery = (global => {
-    "use strict";
+    'use strict';
 
     const DEFAULT_URI = '/data/tmp.json?'; //path to local json file because google limits request for free accounts
     const DEFAULT_TERM = 'snowboarding';   //default search query term
-    const DEFAULT_NUM = 10;                //a number between 1-10 represents num of search results retured
+    const DEFAULT_NUM = 10;                //a number between 1-10 represents num of search results returned
 
     class Gallery {
 
+        /**
+         * @throws {Error} Will throw error if opts object does not provide a node property with valid DOM Node
+         */
         constructor(opts){
 
             if(!(opts.node instanceof Node)){
-                throw new Error("Gallery Requires DOM Node");
+                throw new Error('Gallery Requires DOM Node');
             }
 
             this.uri        = opts.uri      || DEFAULT_URI;
@@ -25,6 +36,12 @@ var Gallery = (global => {
             this.model      = null;
             this.lightbox   = null;
 
+
+            /**
+             *
+             * @param responseText
+             * @description parse xhr response from google search api and creates data model for gallery and lightbox instance
+             */
             this.resolver = (responseText) =>{
                 let json = JSON.parse(responseText), imagesArray = [];
                 this.model = json;
@@ -32,7 +49,7 @@ var Gallery = (global => {
 
                 json.items.forEach( (item) => {
                     if (item.pagemap.hasOwnProperty('cse_image')) {
-                        this.addImage(item.pagemap['cse_image'][0].src);
+                        this.addFigure(item.pagemap['cse_image'][0].src);
                         imagesArray.push(item.pagemap['cse_image'][0].src);
                     }
                 });
@@ -47,6 +64,11 @@ var Gallery = (global => {
                 }
             };
 
+            /**
+             *
+             * @param error
+             * @throws {Error} Will throw error if httpXMLRequest is unsuccessful
+             */
             this.catcher = (error) => {
                 throw new Error('There was an error fetching Gallery data: ' + error);
             };
@@ -56,8 +78,7 @@ var Gallery = (global => {
         }
 
         /**
-         * renderUI
-         * @desc - appends ui templates into the container node for the gallery
+         * Creates and appends Gallery template to DOM
          */
         renderUI(){
 
@@ -84,9 +105,8 @@ var Gallery = (global => {
         }
 
         /**
-         * fetchData
+         * Makes xhr request for images
          * @return {Promise}
-         * @desc - Makes xhr request for images and returns promise object
          */
         fetchData(){
             return new Promise((resolve, reject) => {
@@ -106,14 +126,14 @@ var Gallery = (global => {
         }
 
         /**
-         * addImage
-         * @param {String} src
-         * @desc - creates figure object and append it's el property to dom
+         * Creates figure object and DOM. Defines click handler for a figure. Attempts to add lazyload image to figure.
+         * @param  {String} src string to serve as url or path to image
+         * @throws {Error} Will throw error unable to append lazyload image to figure
          */
-        addImage(src){
+        addFigure(src){
 
             if(typeof src !== 'string'){
-                throw new Error("Gallery addImage method requires src string arg");
+                throw new Error('Gallery addFigure method requires src string arg');
             }
 
             let container = this.container.querySelector('.images');
@@ -123,27 +143,27 @@ var Gallery = (global => {
                 key: { value: container.childNodes.length }
             });
 
-            Object.defineProperty(figure, "template", { set: function (x) {
+            Object.defineProperty(figure, 'template', { set: function (x) {
                 let parser = new DOMParser();
                 let doc = parser.parseFromString(x, 'text/xml');
                 this.el = doc.firstChild;
             }});
 
-            let imageClickHandler = (e) => {
+            let figureClickHandler = (e) => {
                 let src = e.target.parentNode.attributes['data-src'].value,
                     key = parseInt(e.target.parentNode.attributes['data-key'].value);
                 this.lightbox.show(src, key);
             }
 
             figure.template = `<figure data-src='${figure.src}' data-key='${figure.key}' />`;
-            figure.el.addEventListener('click', imageClickHandler, false);
+            figure.el.addEventListener('click', figureClickHandler, false);
 
             container.appendChild(figure.el);
 
             try {
                 lazyLoad(figure.src, figure.el);
             } catch (err) {
-                console.log('Error adding lazyload image: ' + err);
+                throw new Error('Error adding lazyload image: ' + err);
             }
         }
 

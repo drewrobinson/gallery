@@ -1,14 +1,18 @@
+/**
+ *  Class representing a LightBox.
+ *
+ * @author Drew Robinson (hello@drewrobinson.com)
+ * @version 0.0.1
+ * @param {Node} element to append the lightbox into
+ * @param {Array} model is array of image urls/paths
+ * @return LightBox Class
+ */
+
 var util = require('../util/util');
 
 var LightBox = (global => {
-    "use strict";
+    'use strict';
 
-    /**
-     * LightBox
-     * @param element
-     * @param model
-     * @desc - Responsible for lightbox behavior
-     */
     class LightBox {
 
         constructor(element, model){
@@ -21,7 +25,16 @@ var LightBox = (global => {
             element.appendChild(util.toHTML(template));
 
             this.uid = Math.floor((Math.random() * 10000) + 1);
+            this.index = 0;
+            this.elm = element.querySelector('.lightbox');
+            this.setModel(model);
 
+            /**
+             * Responsible for making the lightbox visible to user and binding click event listener.
+             * @param src
+             * @param key
+             * @throws {TypeError} Will throw type error src arg is not a string or key is not a number
+             */
             this.show = (src, key) =>{
                 if((typeof src !== 'string' ) || (typeof key !=='number')){
                     throw new TypeError('Show method requires a string url and number key');
@@ -31,15 +44,11 @@ var LightBox = (global => {
                 this.elm.addEventListener('click', this, false);
                 this.update(src, key);
             };
-
-            this.index = 0;
-            this.elm = element.querySelector('.lightbox');
-            this.setModel(model);
         }
 
-
         /**
-         * @desc - delegate event handlers for next, prev, hide methods
+         * Delegates event to next, prev, hide methods
+         * @param e
          */
         handleEvent(e){
             let action = e.target.getAttribute('class') || '';
@@ -58,6 +67,9 @@ var LightBox = (global => {
             }
         }
 
+        /**
+         * Hides the lightbox and removes click event listener
+         */
         hide(){
 
             let animationEndHandler = () => {
@@ -71,15 +83,21 @@ var LightBox = (global => {
             this.elm.addEventListener('webkitAnimationEnd', animationEndHandler, false);
         }
 
+        /**
+         * Increments index and calls update method
+         */
         next(){
             let main = this.elm.querySelector('.main');
 
-            let index =  this.index; //parseInt(main.dataset.key);
+            let index =  this.index;
             let nextIndex = (index < this.model.length - 1) ? index + 1 : 0;
             let src = this.model[nextIndex];
             this.update(src, nextIndex);
         }
 
+        /**
+         * Decrements index and calls update method
+         */
         prev(){
             let main = this.elm.querySelector('.main');
             let index = this.index; //parseInt(main.dataset.key);
@@ -88,10 +106,19 @@ var LightBox = (global => {
             this.update(src, prevIndex);
         }
 
+        /**
+         * Setter for model
+         * @param {Array} imageURLs
+         */
         setModel(imageURLs){
             this.model = imageURLs;
         }
 
+        /**
+         * Updates the lightbox main image src and key attributes.
+         * @param src
+         * @param key
+         */
         update(src, key){
             this.index = key;
 

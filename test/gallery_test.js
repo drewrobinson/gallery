@@ -29,7 +29,7 @@ describe('Gallery instance', function(){
         expect(fnGood).not.to.throw(CONSTRUCTOR_ERROR);
     });
 
-    it('should contain renderUI, fetchData, addImage, resolver, and catcher methods',function(){
+    it('should contain renderUI, fetchData, addFigure, resolver, and catcher methods',function(){
 
         var gallery = new Gallery({
             node: document.createElement('div')
@@ -37,7 +37,7 @@ describe('Gallery instance', function(){
 
         expect(gallery).to.have.property('renderUI');
         expect(gallery).to.have.property('fetchData');
-        expect(gallery).to.have.property('addImage');
+        expect(gallery).to.have.property('addFigure');
         expect(gallery).to.have.property('resolver');
         expect(gallery).to.have.property('catcher');
     });
@@ -48,7 +48,7 @@ describe('Gallery instance', function(){
 describe('Gallery behavior', function(){
 
     var Gallery = require('../app/js/gallery/gallery');
-    var ADD_IMAGE_ERROR = /Gallery addImage method requires src string arg/;
+    var ADD_FIGURE_ERROR = /Gallery addFigure method requires src string arg/;
 
     it('renderUI method should add "container" to gallery container classList', function(){
 
@@ -83,26 +83,26 @@ describe('Gallery behavior', function(){
         expect(typeof searchField.onkeyup).to.equal('function');
     });
 
-    it('addImage method should throw error if src arg is not a String', function(){
+    it('addFigure method should throw error if src arg is not a String', function(){
 
         var gallery = new Gallery({
             node: document.createElement('div')
         });
 
-        var fnBad = function(){gallery.addImage([])};
-        var fnGood = function(){gallery.addImage('https://c2.staticflickr.com/6/5574/30167563922_684e8d6796_b.jpg')};
+        var fnBad = function(){gallery.addFigure([])};
+        var fnGood = function(){gallery.addFigure('https://c2.staticflickr.com/6/5574/30167563922_684e8d6796_b.jpg')};
 
-        expect(fnBad).to.throw(ADD_IMAGE_ERROR);
-        expect(fnGood).not.to.throw(ADD_IMAGE_ERROR);
+        expect(fnBad).to.throw(ADD_FIGURE_ERROR);
+        expect(fnGood).not.to.throw(ADD_FIGURE_ERROR);
     });
 
-    it('addImage method should increase childNodes count by one', function(){
+    it('addFigure method should increase childNodes count by one', function(){
 
         var gallery = new Gallery({
             node: document.createElement('div')
         });
 
-        gallery.addImage('https://c2.staticflickr.com/6/5574/30167563922_684e8d6796_b.jpg');
+        gallery.addFigure('https://c2.staticflickr.com/6/5574/30167563922_684e8d6796_b.jpg');
 
         var imagesContainer = gallery.container.querySelector('.images');
 

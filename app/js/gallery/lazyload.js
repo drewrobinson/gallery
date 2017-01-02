@@ -1,18 +1,24 @@
+/**
+ *  LazyLoad is a helper function. Creates and appends element with
+ *  a placeholder image.  Mouseover event will trigger the placeholder src attribute
+ *  to be replaced with the actual image src uri/path.
+ *
+ * @author Drew Robinson (hello@drewrobinson.com)
+ * @version 0.0.1
+ * @param {String} src arg is a string to serve as url or path to image
+ * @param {Node} elm is a element to append the lazyload image to.
+ * @throws {TypeError} Will throw type error if src arg is not string or elm arg is not a DOM Node
+ * @description Inspired by: https://codepen.io/shshaw/post/responsive-placeholder-image
+ * @TODO: allow for option of autoloading images vs waiting for user interaction to set src attribute
+ */
+
 var lazyLoad = (global => {
+    'use strict';
 
-    "use strict";
-
-    /**
-     * LazyLoad
-     * @param src {String}
-     * @param elm {Node}
-     * @desc - displays placeholder image until a user action.
-     * Inspired by: https://codepen.io/shshaw/post/responsive-placeholder-image
-     */
      let lazyLoad = (src, elm) => {
 
         if (typeof src !== 'string' || !(elm instanceof Node)) {
-            throw Error('lazyLoad requires image src String and DOM Node args');
+            throw TypeError('lazyLoad requires image src String and DOM Node args');
         }
 
         let transSVG = 'data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D"http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" viewBox%3D"0 0 100% 100%"%2F%3E';
