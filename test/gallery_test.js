@@ -3,7 +3,7 @@ var jsdom = require('jsdom');
 
 global.DOMParser = jsdom.jsdom().defaultView.DOMParser;
 
-describe('Gallery instance', function(){
+describe('Gallery edge cases', function(){
     var Gallery = require('../app/js/gallery/gallery');
     var CONSTRUCTOR_ERROR, instance, goodConstructor, badConstructor, fnBad, fnGood;
 

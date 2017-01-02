@@ -3,20 +3,15 @@ var jsdom = require('jsdom');
 
 global.DOMParser = jsdom.jsdom().defaultView.DOMParser;
 
-describe('LazyLoad ', function(){
+describe('LazyLoad edge cases ', function(){
     var lazyload = require('../app/js/gallery/lazyload');
-    var ERROR, fnGood, fnBad, figure;
+    var ERROR, fnGood, fnBad;
 
     before(function(){
         ERROR = /lazyLoad requires image src String and DOM Node args/;
 
         fnGood = function(){lazyload('', document.createElement('div'))};
         fnBad = function(){lazyload({}, '#type-error')};
-
-        figure = {
-            src: '',
-            el: document.createElement('div')
-        };
     });
 
     it('should throw error if first argument is not a String', function(){
@@ -27,6 +22,19 @@ describe('LazyLoad ', function(){
     it('should throw error if second argument is not a Node', function(){
         expect(fnBad).to.throw(ERROR);
         expect(fnGood).not.to.throw(ERROR);
+    });
+});
+
+
+describe('LazyLoad behavior ', function(){
+    var lazyload = require('../app/js/gallery/lazyload');
+    var figure;
+
+    beforeEach(function(){
+        figure = {
+            src: '',
+            el: document.createElement('div')
+        };
     });
 
     it('should increase childNodes count to one', function(){

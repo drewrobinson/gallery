@@ -26,15 +26,16 @@ npm install && gulp
 > mocha
 
 # TOC
-   - [Gallery instance](#gallery-instance)
+   - [Gallery edge cases](#gallery-edge-cases)
    - [Gallery behavior](#gallery-behavior)
-   - [LazyLoad ](#lazyload-)
-   - [LightBox instance](#lightbox-instance)
+   - [LazyLoad edge cases ](#lazyload-edge-cases-)
+   - [LazyLoad behavior ](#lazyload-behavior-)
+   - [LightBox edge cases](#lightbox-edge-cases)
    - [LightBox behavior](#lightbox-behavior)
 <a name=""></a>
 
-<a name="gallery-instance"></a>
-# Gallery instance
+<a name="gallery-edge-cases"></a>
+# Gallery edge cases
 constructor should throw error if option arg does not have DOM node.
 
 ```js
@@ -89,8 +90,8 @@ instance.addFigure('');
 expect(imagesContainer.childNodes.length).to.equal(1);
 ```
 
-<a name="lazyload-"></a>
-# LazyLoad
+<a name="lazyload-edge-cases-"></a>
+# LazyLoad edge cases
 should throw error if first argument is not a String.
 
 ```js
@@ -105,6 +106,8 @@ expect(fnBad).to.throw(ERROR);
 expect(fnGood).not.to.throw(ERROR);
 ```
 
+<a name="lazyload-behavior-"></a>
+# LazyLoad behavior
 should increase childNodes count to one.
 
 ```js
@@ -119,8 +122,8 @@ lazyload(figure.src, figure.el);
 expect(typeof figure.el.firstChild.onmouseover).to.equal('function');
 ```
 
-<a name="lightbox-instance"></a>
-# LightBox instance
+<a name="lightbox-edge-cases"></a>
+# LightBox edge cases
 constructor should throw error if first arg is not a DOM node.
 
 ```js
@@ -220,5 +223,3 @@ instance.show(model[0], 0);
 instance.prev();
 expect(instance.index).to.equal(i);
 ```
-
-

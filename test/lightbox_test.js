@@ -3,7 +3,7 @@ var jsdom = require('jsdom');
 
 global.DOMParser = jsdom.jsdom().defaultView.DOMParser;
 
-describe('LightBox instance', function(){
+describe('LightBox edge cases', function(){
     var LightBox = require('../app/js/gallery/lightbox');
     var CONSTRUCTOR_ERROR, instance, goodConstructor, badConstructor, fnGood, fnBad, closeBtn, mainImg, nextArrow, prevArrow;
 
