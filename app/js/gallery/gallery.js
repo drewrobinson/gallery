@@ -110,7 +110,8 @@ var Gallery = (global => {
         fetchData(){
             return new Promise((resolve, reject) => {
                 let xhr = new XMLHttpRequest();
-                    xhr.open('GET', this.uri + '&q=' + this.term + '&num=' + this.num);
+                let url = `${this.uri}&q=${this.term}&num=${this.num}`;
+                xhr.open('GET', url);
 
                 xhr.onload = () => {
                     if (xhr.status >= 200 && xhr.status < 300) {
