@@ -15,7 +15,7 @@
 var lazyLoad = (global => {
     'use strict';
 
-     let lazyLoad = (src, elm) => {
+     let lazyLoad = (src, elm, autoload) => {
 
         if (typeof src !== 'string' || !(elm instanceof Node)) {
             throw TypeError('lazyLoad requires image src String and DOM Node args');
@@ -25,15 +25,19 @@ var lazyLoad = (global => {
 
         let iconSVG = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 100% 100%"><defs><symbol id="a" viewBox="0 0 90 66" opacity="0.3"><path d="M85 5v56H5V5h80m5-5H0v66h90V0z"/><circle cx="18" cy="20" r="6"/><path d="M56 14L37 39l-8-6-17 23h67z"/></symbol></defs><use xlink:href="#a" width="20%" x="40%"/></svg>';
 
-        let replace = (e) => {
+        let mouseoverHandler = (e) => {
+            console.log('mouseOverHandler');
 
             let target = e.target;
+
+            if(e.type === 'mouseover'){
+                target.removeEventListener('mouseover', mouseoverHandler, false);
+            }
 
             target.onload = function(){
                 target.classList.add('animate-fade-in');
             };
 
-            target.removeEventListener('mouseover', replace, false);
             target.setAttribute('src', transSVG);
             target.style.backgroundImage = 'url("' + src + '")';
         };
@@ -41,7 +45,24 @@ var lazyLoad = (global => {
         let image = document.createElement('IMG');
         image.setAttribute('class', 'replaceable');
         image.setAttribute('src', 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(iconSVG));
-        image.onmouseover = replace;
+
+         if(!!autoload){
+             var tmp = new Image();
+
+             tmp.onload = function(){
+                 setTimeout(function(){
+                     image.setAttribute('src', transSVG);
+                     image.style.backgroundImage = 'url("' + src + '")';
+                     image.classList.add('animate-fade-in');
+                 },1000);
+             };
+             tmp.src = src;
+             tmp.onprogress = function(event){
+                 console.log('progress event: ', event);
+             };
+         }else{
+             image.onmouseover = mouseoverHandler;
+         }
 
         elm.appendChild(image);
     }

@@ -17,6 +17,7 @@ var Gallery = (global => {
     const DEFAULT_URI = '/data/tmp.json?'; //path to local json file because google limits request for free accounts
     const DEFAULT_TERM = 'snowboarding';   //default search query term
     const DEFAULT_NUM = 10;                //a number between 1-10 represents num of search results returned
+    const DEFAULT_AUTOLOAD = false;
 
     class Gallery {
 
@@ -32,6 +33,8 @@ var Gallery = (global => {
             this.uri        = opts.uri      || DEFAULT_URI;
             this.term       = opts.term     || DEFAULT_TERM;
             this.num        = opts.num      || DEFAULT_NUM;
+            this.autoload   = opts.autoload || DEFAULT_AUTOLOAD;
+
             this.container  = opts.node;
             this.model      = null;
             this.lightbox   = null;
@@ -161,7 +164,7 @@ var Gallery = (global => {
             container.appendChild(figure.el);
 
             try {
-                lazyLoad(figure.src, figure.el);
+                lazyLoad(figure.src, figure.el, this.autoload);
             } catch (err) {
                 throw new Error('Error adding lazyload image: ' + err);
             }
