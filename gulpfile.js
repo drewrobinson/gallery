@@ -36,7 +36,7 @@ gulp.task('test', function() {
         .src(['test/*.js'], { read: false })
         .pipe(mocha({
             require: ['jsdom-global/register'],
-            reporter: 'markdown'
+            reporter: 'min'//markdown, min
         }));
 });
 

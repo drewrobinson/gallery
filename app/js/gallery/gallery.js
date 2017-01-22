@@ -58,7 +58,7 @@ var Gallery = (global => {
 
                 let searchField = this.container.querySelector('.search-term');
                     searchField.value = this.model.queries.request[0].searchTerms;
-
+     
                 if(this.lightbox){
                     this.lightbox.setModel(imagesArray)
                 }else{

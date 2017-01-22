@@ -115,17 +115,24 @@ expect(fnGood).not.to.throw(ERROR);
 
 <a name="lazyload-behavior-"></a>
 # LazyLoad behavior
-should increase childNodes count to one.
+should increase childNodes count to one when autoload argument is false.
 
 ```js
-lazyload(figure.src, figure.el);
+lazyload(figure.src, figure.el, false);
 expect(figure.el.childNodes.length).to.equal(1);
 ```
 
-should register mouseover event handler on image.
+should increase childNodes count to two when autoload argument is true.
 
 ```js
-lazyload(figure.src, figure.el);
+lazyload(figure.src, figure.el, true);
+expect(figure.el.childNodes.length).to.equal(2);
+```
+
+should register mouseover event handler on image when autoload argument is false.
+
+```js
+lazyload(figure.src, figure.el, false);
 expect(typeof figure.el.firstChild.onmouseover).to.equal('function');
 ```
 
