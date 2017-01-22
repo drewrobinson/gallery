@@ -1,7 +1,6 @@
 /**
- *  LazyLoad is a helper function. Creates and appends element with
- *  a placeholder image.  Mouseover event will trigger the placeholder src attribute
- *  to be replaced with the actual image src uri/path.
+ *  LazyLoad shows placeholder image and progress bar for the image when autoload is true.
+ *  When autoload is false the placeholder image is shown until an image mouseover event is detected.
  *
  * @author Drew Robinson (hello@drewrobinson.com)
  * @version 0.0.1
