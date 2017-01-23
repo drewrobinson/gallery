@@ -69,7 +69,6 @@ var LazyLoader = (global => {
 
                     let resolved = (response) => {
                         this.isProcessing = false;
-
                         var _figure = self.queue.shift();
                         if(_figure){
                             process(_figure);
