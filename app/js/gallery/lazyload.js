@@ -4,10 +4,7 @@
  *
  * @author Drew Robinson (hello@drewrobinson.com)
  * @version 0.0.1
- * @param {String} src arg is a string to serve as url or path to image
- * @param {Node} figure is a element to append the lazyload image to.
- * @throws {TypeError} Will throw type error if src arg is not string or figure arg is not a DOM Node
- * @description Inspired by: https://codepen.io/shshaw/post/responsive-placeholder-image
+ * @params {Bool} autoload
  */
 
 var LazyLoader = (global => {
@@ -23,34 +20,14 @@ var LazyLoader = (global => {
            this.queue        = [];
            this.isProcessing = false;
            this.uid          = Math.random();
-
-            this.resolved = (response) => {
-                this.isProcessing = false;
-
-                var _figure = this.queue.shift();
-
-                if(_figure){
-                    this.process(_figure);
-                }
-            };
-
-            this.rejected = (error) => {
-                //console.log('Error: an image could not be loaded: ',error);
-            };
-
-
-            this.process = (figure) => {
-                var self = this;
-                this.isProcessing = true;
-                this.loadImage(figure).then(this.resolved, this.rejected);
-            }
         }
 
         /**
          * Adds Image To Be LazyLoaded
          * If instance is set to autoload the image will be put in queue otherwise it will wait for user mouseover interaction to load
-         * @param src
-         * @param figure
+         * @param {String} src arg is a string to serve as url or path to image
+         * @param {Node} figure is a element to append the lazyload image to.
+         * @throws {TypeError} Will throw type error if src arg is not string or figure arg is not a DOM Node
          */
         add(src, figure){
 
@@ -86,9 +63,28 @@ var LazyLoader = (global => {
         queueImage(figure){
             if(!figure) return;
 
-            var self = this;
             if(!this.isProcessing){
-                this.process(figure);
+                let process = (figure) => {
+                    var self = this;
+
+                    let resolved = (response) => {
+                        this.isProcessing = false;
+
+                        var _figure = self.queue.shift();
+                        if(_figure){
+                            process(_figure);
+                        }
+                    };
+
+                    let rejected = (error) => {
+                        //console.log('Error: an image could not be loaded: ',error);
+                    };
+
+                    this.isProcessing = true;
+                    this.loadImage(figure).then(resolved, rejected);
+                }
+
+                process(figure);
             }else{
                 this.queue.push(figure);
             }
