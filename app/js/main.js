@@ -12,10 +12,10 @@ document.addEventListener('DOMContentLoaded', function(e) {
     //Create some instances..
     let galleryA = new Gallery({
         node: document.querySelector('#gallery-a'),
-        autoload:false,
+        autoload:true,
         num: 10,
         term: 'cows',
-        uri: api
+        uri: null
     });
 
     // let galleryB = new Gallery({
