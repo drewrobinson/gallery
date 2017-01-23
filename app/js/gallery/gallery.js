@@ -7,7 +7,7 @@
  * @return Gallery Class
  */
 
-var lazyLoad = require('./lazyload');
+var LazyLoader = require('./lazyload');
 var LightBox = require('./lightbox');
 var util     = require('../util/util');
 
@@ -38,6 +38,7 @@ var Gallery = (global => {
             this.container  = opts.node;
             this.model      = null;
             this.lightbox   = null;
+            this.lazyloader = new LazyLoader(this.autoload);
 
             /**
              *
@@ -164,7 +165,7 @@ var Gallery = (global => {
             container.appendChild(figure.el);
 
             try {
-                lazyLoad(figure.src, figure.el, this.autoload);
+                this.lazyloader.add(figure.src, figure.el);
             } catch (err) {
                 throw new Error('Error adding lazyload image: ' + err);
             }

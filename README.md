@@ -19,13 +19,11 @@ Demo Video: http://www.screencast.com/t/JtqYRKiM
 Install:
 npm install && gulp
 
-
-
 # TOC
    - [Gallery edge cases](#gallery-edge-cases)
    - [Gallery behavior](#gallery-behavior)
-   - [LazyLoad edge cases ](#lazyload-edge-cases-)
-   - [LazyLoad behavior ](#lazyload-behavior-)
+   - [LazyLoad edge cases:](#lazyload-edge-cases)
+   - [LazyLoad behavior:](#lazyload-behavior)
    - [LightBox edge cases](#lightbox-edge-cases)
    - [LightBox behavior](#lightbox-behavior)
 <a name=""></a>
@@ -97,43 +95,66 @@ instance.addFigure('');
 expect(imagesContainer.childNodes.length).to.equal(1);
 ```
 
-<a name="lazyload-edge-cases-"></a>
-# LazyLoad edge cases
-should throw error if first argument is not a String.
+<a name="lazyload-edge-cases"></a>
+# LazyLoad edge cases:
+add method should throw error if first argument is not a String.
 
 ```js
 expect(fnBad).to.throw(ERROR);
 expect(fnGood).not.to.throw(ERROR);
 ```
 
-should throw error if second argument is not a Node.
+add method should throw error if second argument is not a Node.
 
 ```js
 expect(fnBad).to.throw(ERROR);
 expect(fnGood).not.to.throw(ERROR);
 ```
 
-<a name="lazyload-behavior-"></a>
-# LazyLoad behavior
-should increase childNodes count to one when autoload argument is false.
+<a name="lazyload-behavior"></a>
+# LazyLoad behavior:
+add method should add a single childnode to the figure.
 
 ```js
-lazyload(figure.src, figure.el, false);
+autoLoadInstance.add(figure.src, figure.el);
 expect(figure.el.childNodes.length).to.equal(1);
 ```
 
-should increase childNodes count to two when autoload argument is true.
+childnode should be an IMG.
 
 ```js
-lazyload(figure.src, figure.el, true);
-expect(figure.el.childNodes.length).to.equal(2);
+autoLoadInstance.add(figure.src, figure.el);
+expect(figure.el.childNodes[0].tagName).to.equal('IMG');
 ```
 
-should register mouseover event handler on image when autoload argument is false.
+add method should NOT register mouseover event handler on image when autoload is true.
 
 ```js
-lazyload(figure.src, figure.el, false);
+autoLoadInstance.add(figure.src, figure.el);
+expect(typeof figure.el.firstChild.onmouseover).to.equal('undefined');
+```
+
+add method should register mouseover event handler on image when autoload is false.
+
+```js
+nonAutoLoadInstance.add(figure.src, figure.el);
 expect(typeof figure.el.firstChild.onmouseover).to.equal('function');
+```
+
+queueImage method should increase queue when called consecutively.
+
+```js
+autoLoadInstance.queueImage(figure);
+autoLoadInstance.queueImage(figure);
+autoLoadInstance.queueImage(figure);
+expect(autoLoadInstance.queue.length).to.equal(2);
+```
+
+loadImage method should return a Promise.
+
+```js
+var result = autoLoadInstance.loadImage(figure);
+expect(result instanceof Promise).to.be.ok;
 ```
 
 <a name="lightbox-edge-cases"></a>
@@ -237,3 +258,4 @@ instance.show(model[0], 0);
 instance.prev();
 expect(instance.index).to.equal(i);
 ```
+

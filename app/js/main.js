@@ -12,19 +12,17 @@ document.addEventListener('DOMContentLoaded', function(e) {
     //Create some instances..
     let galleryA = new Gallery({
         node: document.querySelector('#gallery-a'),
-        autoload:true,
-        num: 10,
-        term: 'cats',
-        uri: null
-    });
-
-    let galleryB = new Gallery({
-        node: document.querySelector('#gallery-b'),
         autoload:false,
         num: 10,
-        term: 'snowboarding',
-        uri: null
+        term: 'cows',
+        uri: api
     });
 
-
+    // let galleryB = new Gallery({
+    //     node: document.querySelector('#gallery-b'),
+    //     autoload:false,
+    //     num: 10,
+    //     term: 'horses',
+    //     uri: null
+    // });
 });
