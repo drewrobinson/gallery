@@ -85,7 +85,7 @@ var LazyLoader = (global => {
 
                 process(figure);
             }else{
-                this.queue.push(figure);
+                this.queue.unshift(figure);
             }
         }
     
