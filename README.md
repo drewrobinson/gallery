@@ -26,6 +26,7 @@ npm install && gulp
    - [LazyLoad behavior:](#lazyload-behavior)
    - [LightBox edge cases](#lightbox-edge-cases)
    - [LightBox behavior](#lightbox-behavior)
+   - [Queue Data Structure](#queue-data-structure)
 <a name=""></a>
 
 <a name="gallery-edge-cases"></a>
@@ -141,15 +142,6 @@ nonAutoLoadInstance.add(figure.src, figure.el);
 expect(typeof figure.el.firstChild.onmouseover).to.equal('function');
 ```
 
-queueImage method should increase queue when called consecutively.
-
-```js
-autoLoadInstance.queueImage(figure);
-autoLoadInstance.queueImage(figure);
-autoLoadInstance.queueImage(figure);
-expect(autoLoadInstance.queue.length).to.equal(2);
-```
-
 loadImage method should return a Promise.
 
 ```js
@@ -258,4 +250,53 @@ instance.show(model[0], 0);
 instance.prev();
 expect(instance.index).to.equal(i);
 ```
+
+<a name="queue-data-structure"></a>
+# Queue Data Structure
+enqueue method should increase queue size.
+
+```js
+instance.enqueue(figure);
+expect(instance.size()).to.equal(1);
+```
+
+dequeue method should return first element and decrease queue size.
+
+```js
+instance.enqueue(figure);
+var el = instance.dequeue(figure);
+expect(instance.size()).to.equal(0);
+expect(el).to.be.ok;
+```
+
+front method should return first element and not change queue size.
+
+```js
+instance.enqueue(figure);
+var el = instance.front();
+expect(el).to.be.ok;
+expect(instance.size()).to.equal(1);
+```
+
+isEmpty method should return false when elements exist.
+
+```js
+instance.enqueue(figure);
+expect(instance.isEmpty()).to.be.false;
+```
+
+isEmpty method should return true when no elements exist.
+
+```js
+expect(instance.isEmpty()).to.be.true;
+```
+
+print method should return a string.
+
+```js
+instance.enqueue(figure);
+expect(typeof instance.print() === 'string').to.be.true;
+```
+
+
 

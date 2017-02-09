@@ -15,14 +15,14 @@ document.addEventListener('DOMContentLoaded', function(e) {
         autoload:true,
         num: 10,
         term: 'cows',
-        uri: null
+        uri: api
     });
 
-    // let galleryB = new Gallery({
-    //     node: document.querySelector('#gallery-b'),
-    //     autoload:false,
-    //     num: 10,
-    //     term: 'horses',
-    //     uri: api
-    // });
+    let galleryB = new Gallery({
+        node: document.querySelector('#gallery-b'),
+        autoload:false,
+        num: 10,
+        term: 'horses',
+        uri: api
+    });
 });

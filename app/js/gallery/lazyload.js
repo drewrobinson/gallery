@@ -65,27 +65,27 @@ var LazyLoader = (global => {
         queueImage(figure){
             if(!figure) return;
 
-            if(!this.isProcessing){
-                let process = (figure) => {
-                    var self = this;
+            var self = this;
 
-                    let resolved = (response) => {
-                        this.isProcessing = false;
-                        var _figure = self.queue.dequeue();
-                        
-                        if(_figure){
-                            process(_figure);
-                        }
-                    };
+            let resolved = (response) => {
+                this.isProcessing = false;
+                var _figure = self.queue.dequeue();
 
-                    let rejected = (error) => {
-                        //console.log('Error: an image could not be loaded: ',error);
-                    };
-
-                    this.isProcessing = true;
-                    this.loadImage(figure).then(resolved, rejected);
+                if(_figure){
+                    process(_figure);
                 }
+            };
 
+            let rejected = (error) => {
+                console.log('Error: an image could not be loaded: ',error);
+            };
+
+            let process = (figure) => {
+                this.isProcessing = true;
+                this.loadImage(figure).then(resolved, rejected);
+            };
+
+            if(!this.isProcessing){
                 process(figure);
             }else{
                 this.queue.enqueue(figure);

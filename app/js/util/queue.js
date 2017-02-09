@@ -1,7 +1,7 @@
 /**
  * Represents a Queue Data Structure
  * @constructor
- * @desc - FIFO Queue
+ * @desc - Enforces FIFO Queue
  */
 
 var Queue = (global => {
@@ -32,6 +32,7 @@ var Queue = (global => {
 
         this.print = function(){
             console.log(items.toString());
+            return items.toString();
         }
     }
 

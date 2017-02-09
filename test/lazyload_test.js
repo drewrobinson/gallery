@@ -3,7 +3,7 @@ var jsdom = require('jsdom');
 
 global.DOMParser = jsdom.jsdom().defaultView.DOMParser;
 
-xdescribe('LazyLoad edge cases:', function(){
+describe('LazyLoad edge cases:', function(){
     var LazyLoader = require('../app/js/gallery/lazyload');
     var ERROR, instance, fnGood, fnBad;
 
@@ -28,7 +28,7 @@ xdescribe('LazyLoad edge cases:', function(){
 });
 
 
-xdescribe('LazyLoad behavior:', function(){
+describe('LazyLoad behavior:', function(){
     var LazyLoader = require('../app/js/gallery/lazyload');
     var figure, autoLoadInstance, nonAutoLoadInstance;
 
@@ -60,14 +60,7 @@ xdescribe('LazyLoad behavior:', function(){
         nonAutoLoadInstance.add(figure.src, figure.el);
         expect(typeof figure.el.firstChild.onmouseover).to.equal('function');
     });
-
-    it('queueImage method should increase queue when called consecutively', function(){
-        autoLoadInstance.queueImage(figure);
-        autoLoadInstance.queueImage(figure);
-        autoLoadInstance.queueImage(figure);
-        expect(autoLoadInstance.queue.length).to.equal(2);
-    });
-
+    
     it('loadImage method should return a Promise', function(){
         var result = autoLoadInstance.loadImage(figure);
         expect(result instanceof Promise).to.be.ok;
