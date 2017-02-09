@@ -14,6 +14,7 @@ Process:
  - Package manager, browserify
  - Unit testing, mocha, chai, jsdom
 
+Screencast: https://www.screencast.com/t/sphgQqEfiGu
 
 Install:
 npm install && gulp

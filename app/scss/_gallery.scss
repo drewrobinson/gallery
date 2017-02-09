@@ -64,27 +64,45 @@
     background-repeat: no-repeat;
     background-size: cover;
   }
+}
 
-  @include keyframes(fade-in) {
-    0%   { opacity: 0; }
-    100% { opacity: 1; }
+@include keyframes(fade-in) {
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@include keyframes(fade-out) {
+  0%   { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@include keyframes(shake) {
+  10%, 90% {
+    transform: translate3d(-1px, 0, 0);
   }
 
-  @include keyframes(fade-out) {
-    0%   { opacity: 1; }
-    100% { opacity: 0; }
+  20%, 80% {
+    transform: translate3d(2px, 0, 0);
   }
 
-  .animate-fade-in {
-    opacity:0;
-    position:relative;
-    @include animation('fade-in 1s 200ms 1 forwards');
+  30%, 50%, 70% {
+    transform: translate3d(-4px, 0, 0);
   }
-  .animate-fade-out {
-    opacity:0;
-    position:relative;
-    @include animation('fade-out 1s 200ms 1 forwards');
+
+  40%, 60% {
+    transform: translate3d(4px, 0, 0);
   }
+}
+
+.animate-fade-in {
+  opacity:0;
+  position:relative;
+  @include animation('fade-in 1s 200ms 1 forwards');
+}
+.animate-fade-out {
+  opacity:0;
+  position:relative;
+  @include animation('fade-out 1s 200ms 1 forwards');
 }
 
 .lightbox {
@@ -106,7 +124,6 @@
     @include animation('fade-out 1s 1 forwards');
   }
 }
-
 
 .close {
   position: absolute;
@@ -170,6 +187,13 @@
 .arrow-next:hover {
   opacity: 1;
 }
+.arrow-prev:active,
+.arrow-next:active {
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+  @include animation('shake 0.82s cubic-bezier(.36,.07,.19,.97) both');
+}
 
 .arrow-next {
   border-top: 25px solid transparent;
@@ -186,4 +210,5 @@
 .main {
   max-width: 100%;
   max-height: 100%;
+  user-select:none;
 }
