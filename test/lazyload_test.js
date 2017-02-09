@@ -3,7 +3,7 @@ var jsdom = require('jsdom');
 
 global.DOMParser = jsdom.jsdom().defaultView.DOMParser;
 
-describe('LazyLoad edge cases:', function(){
+xdescribe('LazyLoad edge cases:', function(){
     var LazyLoader = require('../app/js/gallery/lazyload');
     var ERROR, instance, fnGood, fnBad;
 
@@ -28,7 +28,7 @@ describe('LazyLoad edge cases:', function(){
 });
 
 
-describe('LazyLoad behavior:', function(){
+xdescribe('LazyLoad behavior:', function(){
     var LazyLoader = require('../app/js/gallery/lazyload');
     var figure, autoLoadInstance, nonAutoLoadInstance;
 

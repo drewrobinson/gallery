@@ -7,6 +7,8 @@
  * @params {Bool} autoload
  */
 
+var Queue = require('../util/queue');
+
 var LazyLoader = (global => {
     'use strict';
 
@@ -17,7 +19,7 @@ var LazyLoader = (global => {
 
         constructor(autoload){
            this.autoload     = autoload || false;
-           this.queue        = [];
+           this.queue        = new Queue();
            this.isProcessing = false;
            this.uid          = Math.random();
         }
@@ -69,7 +71,8 @@ var LazyLoader = (global => {
 
                     let resolved = (response) => {
                         this.isProcessing = false;
-                        var _figure = self.queue.shift();
+                        var _figure = self.queue.dequeue();
+                        
                         if(_figure){
                             process(_figure);
                         }
@@ -85,7 +88,7 @@ var LazyLoader = (global => {
 
                 process(figure);
             }else{
-                this.queue.unshift(figure);
+                this.queue.enqueue(figure);
             }
         }
     

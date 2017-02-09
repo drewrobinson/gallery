@@ -1,6 +1,5 @@
 var util = (global => {
-
-    "use strict";
+    'use strict';
 
     let util = {
         /**
